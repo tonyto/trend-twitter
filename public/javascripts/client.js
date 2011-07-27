@@ -1,5 +1,5 @@
 jQuery(document).ready(function($){
-  var socket = io.connect('http://localhost');
+  var socket = io.connect('http://localhost/index');
   var $page = $(".page"),
     $form = $('.searchForm'),
     $input = $form.find('input'),

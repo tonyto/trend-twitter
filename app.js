@@ -29,19 +29,21 @@ app.configure('production', function(){
 
 // Routes
 
-app.get('/', function(req, res){
+app.get('/index', function(req, res){
   res.render('index', {
     title: 'Express'
   });
 });
 
 app.get('/user', function(req, res){
-  if (req.param('q', null) == null){
-    redirect('/');
+  var qs = req.param('q', null);
+  
+  if (qs == null){
+    redirect('/index');
   };
 
   res.render('user', {
-    title: 'User stats for ' + req.param('q', null)
+    title: 'User stats for ' + qs
   });
 });
 
@@ -52,7 +54,9 @@ console.log("Express server listening on port %d in %s mode",
 
 // socket io
 
-io.sockets.on('connection', function(client) {
+var index = io
+  .of('/index')
+  .on('connection', function(client) {
   var tweeter = new Tweeter();
 	
   client.emit('news', {hello: 'world'});
@@ -83,7 +87,7 @@ io.sockets.on('connection', function(client) {
 		});
   });
 
-/*	
+
     setInterval(function () {
 		console.log("interval ticked")
 		if (tweeter.q != null){
@@ -91,8 +95,24 @@ io.sockets.on('connection', function(client) {
 			client.broadcast.emit('result', tweeter.refresh());
 		}
 	}, 10000);
-*/
-
 });
+
+var user = io
+  .of('/user')
+  .on('connection', function(client) {
+    client.emit('news', {hello: 'world'});
+    console.log('server connected to user');
+    
+	  client.on('hello', function(message) {
+	    console.log(message);
+		  client.broadcast.emit("hello world user");
+	  });
+	
+	  client.on('foo', function(message) {
+      console.log('hey, Ive received something from the user');
+      console.log(message);
+      client.broadcast.emit('foo: ', message);
+    });
+  });
 
 
