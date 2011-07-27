@@ -35,6 +35,16 @@ app.get('/', function(req, res){
   });
 });
 
+app.get('/user', function(req, res){
+  if (req.param('q', null) == null){
+    redirect('/');
+  };
+
+  res.render('user', {
+    title: 'User stats for ' + req.param('q', null)
+  });
+});
+
 app.listen(3000);
 
 console.log("Express server listening on port %d in %s mode",	
@@ -73,13 +83,16 @@ io.sockets.on('connection', function(client) {
 		});
   });
 
-	setInterval(function () {
+/*	
+    setInterval(function () {
 		console.log("interval ticked")
 		if (tweeter.q != null){
 			console.log("refreshing tweets")
 			client.broadcast.emit('result', tweeter.refresh());
 		}
 	}, 10000);
+*/
+
 });
 
 
