@@ -98,8 +98,7 @@ var index = io
 		});
   });
 
-
-    setInterval(function () {
+  setInterval(function () {
 		console.log("interval ticked")
 		if (tweeter.q != null){
 			console.log("refreshing tweets")
@@ -114,7 +113,7 @@ var user = io
     client.emit('alive', {hello: 'world'});
     console.log('server connected to user');
     
-    var user = new User();
+    var user = new User(twitter);
     
 	  client.on('hello', function(message) {
 	    console.log(message);
@@ -123,6 +122,7 @@ var user = io
 	  
 	  client.on('username', function(arg) {
 	    console.log("my name is: " + arg['name']);
+	    user.get(arg['name']);
 	  });
 	
 	  client.on('foo', function(message) {
