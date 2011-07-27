@@ -59,20 +59,16 @@ io.sockets.on('connection', function(client) {
     client.broadcast.emit('foo: ', message);
   });
   
-//  client.on('search result', function(result) {
-//    console.log(eyes.inspect(JSON.parse(result)));
-//    client.broadcast.emit('show result', result);
-//  });
-  
   client.on('search', function(searchTerm) {
     console.log("searching for: " + searchTerm);
-		tweeter.q = searchTerm;
-    tweeter.search(searchTerm);
+    tweeter.q = null;
+    tweeter.q = searchTerm;
+    tweeter.search();
 
 		tweeter.on('search result', function (results) {
 			if (results){
-				console.log(eyes.inspect(JSON.stringify(results)))
-				client.broadcast.emit('result', results);
+				console.log(eyes.inspect(results['results']))
+				client.broadcast.emit('result', results['results']);
 			};
 		});
   });

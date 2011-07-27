@@ -3,7 +3,8 @@ jQuery(document).ready(function($){
   var $page = $(".page"),
     $form = $('.searchForm'),
     $input = $form.find('input'),
-    $result = $page.find('.result');
+    $result = $page.find('.result'),
+    $body = $('body');
 
   socket.on('news', function (data) {
     console.info(data);
@@ -12,7 +13,12 @@ jQuery(document).ready(function($){
 
   socket.on('result', function (tweets) {
 	  console.info(tweets);
-    $result.text(tweets['query']);
+	  if (tweets != null){
+	    $.each(tweets, function (index, value) {
+	      $result.append('<p>' + value['text'] + '</p>');
+	    });
+      
+    }
   });
 
   $('.foo').click(function() {

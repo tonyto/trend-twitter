@@ -9,5 +9,6 @@
     , "twitter": "v0.1.17"
     , "eyes": "0.1.6"
     , "underscore": "1.1.7"
+    , "jasmine-node" : ">= 1.0.6"
   }
 }
