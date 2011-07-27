@@ -1,5 +1,6 @@
 node_modules/*
 spec/*
+config.js
 # Compiled source #
 ###################
 *.com

@@ -9,10 +9,16 @@ var express = require('express'),
   eyes = require('eyes'),
   Tweeter = require('./lib/tweeter').Tweeter
   User = require('./lib/user').User,
-  Twitter = require('twitter');
+  Twitter = require('twitter')
+  config = require('./config');
 // Configuration
 
-
+var twitter = new Twitter({
+  consumer_key: config.twitter['consumer_key'],
+  consumer_secret: config.twitter['consumer_secret'],
+  access_token_key: config.twitter['access_token_key'],
+  access_token_secret: config.twitter['access_token_secret'],
+})
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
