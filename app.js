@@ -7,8 +7,12 @@ var express = require('express'),
   app = express.createServer(),
   io = require("socket.io").listen(app),
   eyes = require('eyes'),
-  Tweeter = require('./lib/tweeter').Tweeter;
+  Tweeter = require('./lib/tweeter').Tweeter
+  User = require('./lib/user').User,
+  Twitter = require('twitter');
 // Configuration
+
+
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -57,7 +61,7 @@ console.log("Express server listening on port %d in %s mode",
 var index = io
   .of('/index')
   .on('connection', function(client) {
-  var tweeter = new Tweeter();
+  var tweeter = new Tweeter(twitter);
 	
   client.emit('news', {hello: 'world'});
   console.log('server connected');
@@ -102,6 +106,8 @@ var user = io
   .on('connection', function(client) {
     client.emit('news', {hello: 'world'});
     console.log('server connected to user');
+    
+    var user = new User();
     
 	  client.on('hello', function(message) {
 	    console.log(message);
