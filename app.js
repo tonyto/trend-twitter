@@ -7,10 +7,12 @@ var express = require('express'),
   app = express.createServer(),
   io = require("socket.io").listen(app),
   eyes = require('eyes'),
-  Tweeter = require('./lib/tweeter').Tweeter
+  Tweeter = require('./lib/tweeter').Tweeter,
   User = require('./lib/user').User,
-  Twitter = require('twitter')
-  config = require('./config');
+  Twitter = require('twitter'),
+  config = require('./config'),
+	digital = require('7digital-api'),
+	releases = new digital.Releases();
 // Configuration
 
 var twitter = new Twitter({
@@ -47,10 +49,6 @@ app.get('/index', function(req, res){
 
 app.get('/user', function(req, res){
   var qs = req.param('q', null);
-  
-  if (qs == null){
-    redirect('/index');
-  };
 
   res.render('user', {
     title: 'User stats for ' + qs,
@@ -122,8 +120,16 @@ var user = io
 	  
 	  client.on('username', function(arg) {
 	    console.log("my name is: " + arg['name']);
-	    user.get(arg['name']);
+	    //user.get(arg['name']);
 	  });
+	
+		client.on('songitar', function(value) {
+			console.log("****" + value);
+			
+			releases.search({q : value}, function(err, data){
+				console.log(eyes.inspect(data));
+			});
+		});
 	
 	  client.on('foo', function(message) {
       console.log('hey, Ive received something from the user');
