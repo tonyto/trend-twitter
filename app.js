@@ -53,7 +53,8 @@ app.get('/user', function(req, res){
   };
 
   res.render('user', {
-    title: 'User stats for ' + qs
+    title: 'User stats for ' + qs,
+    username: qs
   });
 });
 
@@ -110,7 +111,7 @@ var index = io
 var user = io
   .of('/user')
   .on('connection', function(client) {
-    client.emit('news', {hello: 'world'});
+    client.emit('alive', {hello: 'world'});
     console.log('server connected to user');
     
     var user = new User();
@@ -118,6 +119,10 @@ var user = io
 	  client.on('hello', function(message) {
 	    console.log(message);
 		  client.broadcast.emit("hello world user");
+	  });
+	  
+	  client.on('username', function(arg) {
+	    console.log("my name is: " + arg['name']);
 	  });
 	
 	  client.on('foo', function(message) {

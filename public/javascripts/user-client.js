@@ -1,11 +1,12 @@
 jQuery(document).ready(function($){
   var socket = io.connect('http://localhost/user');
   var $page = $(".page"),
-    $body = $('body');
+    $body = $('body'),
+    $username = $('.username');
 
-  socket.on('news', function (data) {
+  socket.on('alive', function (data) {
     console.info(data);
-    socket.emit('hello', {my: 'data'});
+    socket.emit('username', {name: $username.text()});
   });
 
   $('.foo').click(function() {
