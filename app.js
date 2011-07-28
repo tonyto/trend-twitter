@@ -10,9 +10,8 @@ var express = require('express'),
   Tweeter = require('./lib/tweeter').Tweeter,
   User = require('./lib/user').User,
   Twitter = require('twitter'),
-  config = require('./config'),
-	digital = require('7digital-api'),
-	releases = new digital.Releases();
+  config = require('./config')
+  Echojs = require('./lib/echojs').Echojs;
 // Configuration
 
 var twitter = new Twitter({
@@ -21,6 +20,8 @@ var twitter = new Twitter({
   access_token_key: config.twitter['access_token_key'],
   access_token_secret: config.twitter['access_token_secret'],
 })
+
+var echonest = new Echojs(config.echonest['key']);
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -113,29 +114,36 @@ var user = io
     
     var user = new User(twitter);
     
-	  client.on('hello', function(message) {
-	    console.log(message);
-		  client.broadcast.emit("hello world user");
-	  });
-	  
-	  client.on('username', function(arg) {
-	    console.log("my name is: " + arg['name']);
-	    //user.get(arg['name']);
-	  });
-	
-		client.on('songitar', function(value) {
-			console.log("****" + value);
-			
-			releases.search({q : value}, function(err, data){
-				console.log(eyes.inspect(data));
-			});
-		});
-	
-	  client.on('foo', function(message) {
-      console.log('hey, Ive received something from the user');
+    client.on('hello', function(message) {
       console.log(message);
-      client.broadcast.emit('foo: ', message);
+        client.broadcast.emit("hello world user");
     });
+    
+    client.on('username', function(arg) {
+      //console.log("my name is: " + arg['name']);
+      //user.get(arg['name']);
+    });
+
+    client.on('songitar', function(value) {
+      console.log("****" + value);
+      echonest.q = null;
+      echonest.q = value;
+      echonest.songSearch(value);
+    });
+    
+    echonest.on('search song response', function (searchResponse) {
+      console.log("* about to broadcast : " + searchResponse);
+      client.broadcast.emit('songitar-result', searchResponse);
+    });
+    
+    setInterval(function () {
+		  console.log("interval ticked")
+		  if (echonest.q != null){
+			  console.log("refreshing search")
+			  client.broadcast.emit('songitar-result', echonest.refresh());
+		  }
+	  }, 10000);
+
   });
 
 

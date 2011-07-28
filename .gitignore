@@ -1,5 +1,6 @@
 node_modules/*
 spec/*
+temp/*
 config.js
 # Compiled source #
 ###################

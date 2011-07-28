@@ -4,20 +4,26 @@ jQuery(document).ready(function($){
     $body = $('body'),
     $username = $('.username'),
 		$input = $body.find('input'),
-		$form = $('.releaseSearch');
+		$form = $('.releaseSearch'),
+		$result = $('.result');
 
   socket.on('alive', function (data) {
     console.info(data);
     socket.emit('username', {name: $username.text()});
   });
 
-	$form.bind('submit', function(e) {
-	  alert('clicked');
-		socket.emit('songitar', $input.val());
+	socket.on('songitar-result', function (d) {
+	  console.info("im here");
+	  if (d != null){
+  	  $result.text(d);
+	  }
 	});
 
+	$form.bind('submit', function(e) {
+		socket.emit('songitar', $input.val());
+	});
+	
   $('.foo').click(function() {
-    alert('clicked');
     socket.emit('foo', 'someone clicked foo');
     return false;
   });

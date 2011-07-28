@@ -17,7 +17,6 @@ jQuery(document).ready(function($){
 	    $.each(tweets, function (index, value) {
 	      $result.append('<p>' + value['text'] + '</p>');
 	    });
-      
     }
   });
 
