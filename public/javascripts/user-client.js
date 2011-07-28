@@ -5,7 +5,6 @@ jQuery(document).ready(function($){
     $username = $('.username'),
 		$artist = $body.find('.artist'),
 		$track = $body.find('.track'),
-		$form = $('.releaseSearch'),
 		$result = $body.find('.result');
 
   socket.on('alive', function (data) {
