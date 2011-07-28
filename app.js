@@ -124,11 +124,11 @@ var user = io
       //user.get(arg['name']);
     });
 
-    client.on('songitar', function(value) {
-      console.log("****" + value);
+    client.on('songitar', function(arg) {
+      console.log("****" + arg);
       echonest.q = null;
-      echonest.q = value;
-      echonest.songSearch(value);
+      echonest.q = arg;
+      echonest.songSearch();
     });
     
     echonest.on('search song response', function (searchResponse) {

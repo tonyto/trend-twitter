@@ -12,8 +12,12 @@ div(class='page')
   p(class="wait")
     Please wait while we grab your information.
 
-  form(class='releaseSearch')
-    input(type='text')
-    button(type='submit', value='songitar')
+  form
+    span
+      span Artist: 
+        input(type='text', class='artist', name='artist')
+      span Track: 
+        input(type='text', class='track', name='track')
+    a(class='find', href='#') find
 
   p(class="result")

@@ -3,9 +3,10 @@ jQuery(document).ready(function($){
   var $page = $(".page"),
     $body = $('body'),
     $username = $('.username'),
-		$input = $body.find('input'),
+		$artist = $body.find('.artist'),
+		$track = $body.find('.track'),
 		$form = $('.releaseSearch'),
-		$result = $('.result');
+		$result = $body.find('.result');
 
   socket.on('alive', function (data) {
     console.info(data);
@@ -18,13 +19,12 @@ jQuery(document).ready(function($){
   	  $result.text(d);
 	  }
 	});
-
-	$form.bind('submit', function(e) {
-		socket.emit('songitar', $input.val());
-	});
 	
-  $('.foo').click(function() {
-    socket.emit('foo', 'someone clicked foo');
+  $('.find').click(function() {
+		socket.emit('songitar', {artist: $artist.val(), track: $track.val()});
+		
+		$artist.val('');
+		$track.val('');		
     return false;
   });
 });
