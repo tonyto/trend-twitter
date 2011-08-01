@@ -7,10 +7,11 @@ var express = require('express'),
   app = express.createServer(),
   io = require("socket.io").listen(app),
   eyes = require('eyes'),
+	sys = require('sys'),
   Tweeter = require('./lib/tweeter').Tweeter,
   User = require('./lib/user').User,
   Twitter = require('twitter'),
-  config = require('./config')
+  config = require('./config'),
   Echojs = require('./lib/echojs').Echojs;
 // Configuration
 
@@ -18,8 +19,8 @@ var twitter = new Twitter({
   consumer_key: config.twitter['consumer_key'],
   consumer_secret: config.twitter['consumer_secret'],
   access_token_key: config.twitter['access_token_key'],
-  access_token_secret: config.twitter['access_token_secret'],
-})
+  access_token_secret: config.twitter['access_token_secret']
+});
 
 var echonest = new Echojs(config.echonest['key']);
 
@@ -91,16 +92,16 @@ var index = io
 
 		tweeter.on('search result', function (results) {
 			if (results){
-				console.log(eyes.inspect(results['results']))
+				console.log(eyes.inspect(results['results']));
 				client.broadcast.emit('result', results['results']);
 			};
 		});
   });
 
   setInterval(function () {
-		console.log("interval ticked")
+		console.log("interval ticked");
 		if (tweeter.q != null){
-			console.log("refreshing tweets")
+			console.log("refreshing tweets");
 			client.broadcast.emit('result', tweeter.refresh());
 		}
 	}, 10000);
@@ -110,6 +111,7 @@ var user = io
   .of('/user')
   .on('connection', function(client) {
     client.emit('alive', {hello: 'world'});
+		//client.emit('songitar-result', 'I have sent something to sonigtar');
     console.log('server connected to user');
     
     var user = new User(twitter);
@@ -119,11 +121,6 @@ var user = io
         client.broadcast.emit("hello world user");
     });
     
-    client.on('username', function(arg) {
-      //console.log("my name is: " + arg['name']);
-      //user.get(arg['name']);
-    });
-
     client.on('songitar', function(arg) {
       console.log("****" + arg);
       echonest.q = null;
@@ -132,17 +129,11 @@ var user = io
     });
     
     echonest.on('search song response', function (searchResponse) {
-      console.log("* about to broadcast : " + searchResponse);
-      client.broadcast.emit('songitar-result', searchResponse);
+      console.log("* about to broadcast");
+			var jsonResult = JSON.parse(searchResponse);
+      client.emit('songitar-result', jsonResult['response']['songs']);
+			client.broadcast.emit('songitar-result', jsonResult['response']['songs']);
     });
-    
-    setInterval(function () {
-		  console.log("interval ticked")
-		  if (echonest.q != null){
-			  console.log("refreshing search")
-			  client.broadcast.emit('songitar-result', echonest.refresh());
-		  }
-	  }, 10000);
 
   });
 

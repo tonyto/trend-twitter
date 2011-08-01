@@ -15,7 +15,11 @@ jQuery(document).ready(function($){
 	socket.on('songitar-result', function (d) {
 	  console.info("im here");
 	  if (d != null){
-  	  $result.text(d);
+			$result.append("<ul>");
+			d.forEach(function(item) {
+				$result.append("<li>" + item['title'] + "</li>");
+			});
+  	  $result.append("</ul>");
 	  }
 	});
 	
